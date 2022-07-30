@@ -3,7 +3,7 @@
 // 3. 响应拦截器：1.剥离无效数据   2. 处理 token 失效
 // 4. 导出一个函数，调用当前的 axios 实例发请求，返回值 promise
 
-import axios from "axios";
+import axios from "axios"
 import store from "@/store"
 import router from "@/router"
 
