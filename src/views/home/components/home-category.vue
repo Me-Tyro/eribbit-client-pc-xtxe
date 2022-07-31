@@ -1,19 +1,54 @@
 <template>
   <div class='home-category'>
     <ul class="menu">
-      <li v-for="item in menuList" :key="item.id">
+      <li v-for="item in menuList" :key="item.id" @mouseenter="categoryId=item.id">
         <RouterLink :to="`/category/${item.id}`">{{ item.name }}</RouterLink>
         <template v-if="item.children">
-          <RouterLink v-for="sub in item.children" :key="item.id" :to="`/category/sub/${sub.id}`">{{ sub.name }}</RouterLink>
+          <RouterLink v-for="sub in item.children" :key="item.id" :to="`/category/sub/${sub.id}`">{{
+              sub.name
+            }}
+          </RouterLink>
         </template>
       </li>
     </ul>
+
+    <!--    弹层-->
+    <div class="layer">
+      <h4>{{ currCategory && currCategory.id === 'brand' ? '品牌' : '分类' }}推荐 <small>根据您的购买或浏览记录推荐</small></h4>
+      <!--      商品-->
+      <ul v-if="currCategory && currCategory.goods">
+        <li v-for="item in currCategory.goods" :key="item.id">
+          <RouterLink to="/">
+            <img :src="item.picture" alt="">
+            <div class="info">
+              <p class="name ellipsis-2">{{ item.name }}</p>
+              <p class="desc ellipsis">{{ item.desc }}</p>
+              <p class="price"><i>¥</i>{{ item.price }}</p>
+            </div>
+          </RouterLink>
+        </li>
+      </ul>
+      <!-- 品牌 -->
+      <ul v-if="currCategory && currCategory.brands">
+        <li class="brand" v-for="item in currCategory.brands" :key="item.id">
+          <RouterLink to="/">
+            <img :src="item.picture" alt="">
+            <div class="info">
+              <p class="place"><i class="iconfont icon-dingwei"></i>{{ item.place }}</p>
+              <p class="name ellipsis">{{ item.nameEn }}</p>
+              <p class="desc ellipsis-2">{{ item.name }}</p>
+            </div>
+          </RouterLink>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
 <script setup>
-import {computed, reactive} from "vue";
-import {useStore} from "vuex";
+import {computed, reactive, ref} from "vue";
+import {useStore} from "vuex"
+import {findBrand} from "@/api/home"
 
 const stroe = useStore()
 
@@ -21,7 +56,8 @@ const stroe = useStore()
 const brand = reactive({
   id: 'brand',
   name: '品牌',
-  children: [{id: 'brand-children', name: '品牌推荐'}]
+  children: [{id: 'brand-children', name: '品牌推荐'}],
+  brands: []
 })
 
 const menuList = computed(() => {
@@ -37,6 +73,31 @@ const menuList = computed(() => {
   list.push(brand)
   return list
 })
+
+// menuList 是从计算属性中获取到的值，要在里面使用的值为：menuList.value
+// 而在 v-for 循环中的则不需要写成 menuList.value，直接写成 menuList 即可
+// console.log(menuList)
+
+// 得到弹出层的推荐商品数据
+const categoryId = ref(null)
+
+const currCategory = computed(() => {
+  return menuList.value.find(item => item.id === categoryId.value)
+})
+
+// 获取品牌数据：
+
+// 第一种方式：
+// onMounted(async () => {
+//   const data = await findBrand()
+//   console.log(data)
+// })
+// 第二种方式：
+findBrand().then((data) => {
+  // console.log(data)
+  brand.brands = data.result
+})
+
 </script>
 
 <style scoped lang='less'>
@@ -67,5 +128,118 @@ const menuList = computed(() => {
       }
     }
   }
+
+  .layer {
+    width: 990px;
+    height: 500px;
+    background: rgba(255, 255, 255, 0.8);
+    position: absolute;
+    left: 250px;
+    top: 0;
+    display: none;
+    padding: 0 15px;
+
+    h4 {
+      font-size: 20px;
+      font-weight: normal;
+      line-height: 80px;
+
+      small {
+        font-size: 16px;
+        color: #666;
+      }
+    }
+
+    ul {
+      display: flex;
+      flex-wrap: wrap;
+
+      li {
+        width: 310px;
+        height: 120px;
+        margin-right: 15px;
+        margin-bottom: 15px;
+        border: 1px solid #eee;
+        border-radius: 4px;
+        background: #fff;
+
+        &:nth-child(3n) {
+          margin-right: 0;
+        }
+
+        a {
+          display: flex;
+          width: 100%;
+          height: 100%;
+          align-items: center;
+          padding: 10px;
+
+          &:hover {
+            background: #e3f9f4;
+          }
+
+          img {
+            width: 95px;
+            height: 95px;
+          }
+
+          .info {
+            padding-left: 10px;
+            line-height: 24px;
+            width: 190px;
+
+            .name {
+              font-size: 16px;
+              color: #666;
+            }
+
+            .desc {
+              color: #999;
+            }
+
+            .price {
+              font-size: 22px;
+              color: @priceColor;
+
+              i {
+                font-size: 16px;
+              }
+            }
+          }
+        }
+      }
+
+      li.brand {
+        height: 180px;
+
+        a {
+          align-items: flex-start;
+
+          img {
+            width: 120px;
+            height: 160px;
+          }
+
+          .info {
+            p {
+              margin-top: 8px;
+            }
+
+            .place {
+              color: #999;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  &:hover {
+    .layer {
+      display: block;
+    }
+  }
 }
+
+
 </style>
