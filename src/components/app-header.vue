@@ -4,6 +4,7 @@
       <h1 class="logo">
         <RouterLink to="/">小兔鲜</RouterLink>
       </h1>
+      <!-- 导入组件 -->
       <app-header-nav/>
       <div class="search">
         <i class="iconfont icon-search"></i>

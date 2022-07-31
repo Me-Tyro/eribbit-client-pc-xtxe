@@ -9,6 +9,13 @@
             }}
           </RouterLink>
         </template>
+
+        <!-- 骨架 -->
+        <template v-else>
+          <xtx-skeleton width="60px" height="18px" bg="rgba(255,255,255,0.2)" style="margin-right: 5px"
+                        :animated="true"/>
+          <xtx-skeleton width="60px" height="18px" bg="rgba(255,255,255,0.2)" :animated="true"/>
+        </template>
       </li>
     </ul>
 

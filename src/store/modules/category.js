@@ -1,6 +1,6 @@
 // 分类模块
 import {topCategory} from "@/api/constants"
-import {findAllCategory} from "@/api/category";
+import {findAllCategory} from "@/api/category"
 
 export default {
   namespaced: true,
