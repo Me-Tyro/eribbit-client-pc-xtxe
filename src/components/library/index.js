@@ -5,7 +5,8 @@
 
 // 1.导入想要封装的组件
 import xtxSkeleton from "@/components/library/xtx-skeleton.vue"
-import xtxCarousel from "@/components/library/xtx-carousel";
+import xtxCarousel from "@/components/library/xtx-carousel.vue"
+import xtxMore from "@/components/library/xtx-more.vue"
 
 // 2. 调用 Vue 方法，对该组件进行全局插件的注册
 export default {
@@ -16,5 +17,6 @@ export default {
     // 3. 前面的 第一个 参数 是我们自己取的名字（name: 'xxx'）,第二个 参数 为导入的组件名称
     app.component('XtxSkeleton', xtxSkeleton)
     app.component('xtxCarousel', xtxCarousel)
+    app.component(xtxMore.name, xtxMore)
   }
 }

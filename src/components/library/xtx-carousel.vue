@@ -65,7 +65,7 @@ const autoPlayFn = () => {
 // 需要监听 sliders 数据变化，判断如果有数据且 autoplay 是 true
 watch(() => props.sliders, (newVal) => {
   if (newVal.length && props.autoPlay) {
-    console.log(newVal.length)
+    // console.log(newVal.length)
     autoPlayFn()
   }
   // immediate: true 是为了如果以后传过来的是静态数据，直接立即执行
